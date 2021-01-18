@@ -1,0 +1,182 @@
+<div class="container emp-profile" *ngIf="account">
+    <div class="row">
+      <div class="col-md-10">
+        <div class="profile-head">
+          <h5>
+            {{account.name}}
+          </h5>
+          <h6>
+            Our favourite <span *ngIf="!account.user.is_staff">client</span><span *ngIf="account.user.is_staff">admin</span>
+          </h6>
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <button class="profile-edit-btn" *ngIf="!isEditing('account')" (click)="editAccountInfo()">Edit account</button>
+        <div class="row" *ngIf="isEditing('account')">
+          <div class="col">
+            <button class="profile-edit-btn" (click)="saveEditedAccount()">Save</button>
+          </div>
+          <div class="col">
+            <button class="profile-edit-btn" (click)="cancelEditingAccount()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="tab-content profile-tab" id="myTabContent">
+          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row">
+              <div class="col-md-6">
+                <p style="color: black">Name</p>
+              </div>
+              <div class="col-md-6">
+                <input type="text" [ngClass]="{'input-border': !isEditing('account')}" [readOnly]="!isEditing('account')" [(ngModel)]="account.name">
+                <span style="color: darkred;" *ngFor="let error of errors['name']"> {{error}} </span> <!-- TODO -->
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <p style="color: black">Email</p>
+              </div>
+              <div class="col-md-6">
+                <p>{{account.user.username}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <p style="color: black">Phone</p>
+              </div>
+              <div class="col-md-6">
+                <input type="text" [ngClass]="{'input-border': !isEditing('account')}" [readOnly]="!isEditing('account')" [(ngModel)]="account.contact">
+                <span style="color: darkred;" *ngFor="let error of errors['contact']"> {{error}} </span> <!-- TODO -->
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <p style="color: black">Gender</p>
+              </div>
+              <div class="col-md-6">
+                <select id="gender" [disabled]="!isEditing('account')" [(ngModel)]="account.gender" >
+                  <option value="F">Female</option>
+                  <option value="M">Male</option>
+                  <option value="O">Other / Rather not say</option>
+                </select>
+                <span style="color: darkred;" *ngFor="let error of errors['gender']"> {{error}} </span> <!-- TODO -->
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <p style="color: black">Date Joined</p>
+              </div>
+              <div class="col-md-6">
+                <p>{{account.user.date_joined.substr(0, 10)}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="row">
+    <p-button routerLink="/orders">See orders</p-button>
+  </div>
+  <div style="margin-top: 1rem" class="row">
+    <h4 style="color: black">Addresses</h4>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Street</th>
+        <th scope="col">City</th>
+        <th scope="col">Code</th>
+        <th scope="col">Country</th>
+        <th scope="col">Door</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let add of addrs; index as i">
+        <th scope="row">{{i + 1}}</th>
+        <td><input class="input-table" type="text" [ngClass]="{'input-border': i != canEdit}" [readOnly]="i != canEdit" [(ngModel)]="add.street" />
+          <span [hidden]="i != canEdit" style="color: darkred;" *ngFor="let error of errors['street']"> {{error}} </span> <!-- TODO -->
+
+        </td>
+        <td><input class="input-table" type="text" [ngClass]="{'input-border': i != canEdit}" [readOnly]="i != canEdit" [(ngModel)]="add.city" />
+          <span [hidden]="i != canEdit" style="color: darkred;" *ngFor="let error of errors['city']"> {{error}} </span> <!-- TODO -->
+
+        </td>
+        <td><input class="input-table" type="text" [ngClass]="{'input-border': i != canEdit}" [readOnly]="i != canEdit" [(ngModel)]="add.code" />
+          <span [hidden]="i != canEdit" style="color: darkred;" *ngFor="let error of errors['code']"> {{error}} </span> <!-- TODO -->
+        </td>
+        <td>
+
+          <select style="color: black" [disabled]="i != canEdit" [(ngModel)]="add.country">
+            <option value="" [selected]="canEdit != -1 && i == canEdit" hidden>Select an option</option>
+            <optgroup label="Africa">
+              <option *ngFor="let c of COUNTRIES['Africa']" [selected]="add.country == c[0]" value="{{c[0]}}">{{c[1]}}</option>
+            </optgroup>
+            <optgroup label="America">
+              <option *ngFor="let c of COUNTRIES['America']" [selected]="add.country == c[0]" value="{{c[0]}}">{{c[1]}}</option>
+            </optgroup>
+            <optgroup label="Asia">
+              <option *ngFor="let c of COUNTRIES['Asia']" [selected]="add.country == c[0]" value="{{c[0]}}">{{c[1]}}</option>
+            </optgroup>
+            <optgroup label="Europe">
+              <option *ngFor="let c of COUNTRIES['Europe']" [selected]="add.country == c[0]" value="{{c[0]}}">{{c[1]}}</option>
+            </optgroup>
+            <optgroup label="Oceania">
+              <option *ngFor="let c of COUNTRIES['Oceania']" [selected]="add.country == c[0]" value="{{c[0]}}">{{c[1]}}</option>
+            </optgroup>
+          </select>
+          <span [hidden]="i != canEdit" style="color: darkred;" *ngFor="let error of errors['country']"> {{error}} </span> <!-- TODO -->
+
+        </td>
+        <td>
+          <input class="input-table" type="text" [ngClass]="{'input-border': i != canEdit}" [readOnly]="i != canEdit" [(ngModel)]="add.door" />
+          <span [hidden]="i != canEdit" style="color: darkred;" *ngFor="let error of errors['door']"> {{error}} </span> <!-- TODO -->
+
+        </td>
+        <td>
+          <div *ngIf="canEdit == -1">
+            <button mat-icon-button aria-label="Save new address" (click)="editAddress(i)"><span class="material-icons">create</span></button>
+            <button mat-icon-button aria-label="Delete address" (click)="deleteAddress(i)"><span class="material-icons">delete_forever</span></button>
+          </div>
+          <div *ngIf="canEdit == i && !addingAddr">
+            <button mat-icon-button aria-label="Cancel operation" (click)="cancelEditAddress()"><span class="material-icons">close</span></button>
+            <button mat-icon-button aria-label="Save address" (click)="saveEditAddress()"><span class="material-icons">done</span></button> <!-- TODO fazer func -->
+          </div>
+          <div *ngIf="canEdit == i && addingAddr">
+            <button mat-icon-button aria-label="Cancel operation" (click)="cancel()"><span class="material-icons">close</span></button>
+            <button mat-icon-button aria-label="Save address" (click)="saveNewAddress()"><span class="material-icons">done</span></button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div>
+      <span *ngFor="let error of errors['street']"> {{error}} </span>
+      <span *ngFor="let error of errors['door']"> {{error}} </span>
+      <span *ngFor="let error of errors['country']"> {{error}} </span>
+      <span *ngFor="let error of errors['city']"> {{error}} </span>
+      <span *ngFor="let error of errors['code']"> {{error}} </span>
+      <span *ngFor="let error of errors['others']"> {{error}} </span>
+    </div>
+    <div class="table-bottom-btn">
+      <button mat-icon-button aria-label="Add new address" *ngIf="canEdit == -1" (click)="addAddress()">
+        <span class="material-icons">
+          add_circle
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="text-align: center" *ngIf="!account"><p>Not logged in...</p></div> <!-- TODO melhorar html -->

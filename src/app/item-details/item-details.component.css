@@ -1,0 +1,46 @@
+@import "../snack-bar.css";
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+/* para a cor do texto dos selects ser branca */
+:host /deep/ .mat-select-value-text {
+  color: white !important;
+}
+
+
+.container-instruments {
+  margin-top: 2rem;
+}
+
+.btn-href {
+  font-size: 0.9em;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 0.3rem;
+  padding: 0 0.5em;
+  margin-right: 0.5em;
+  line-height: 1.5em;
+  transition: all, blue;
+  color: white;
+}
+
+.btn-href:hover {
+  text-decoration: none;
+  background: blue;
+  color: white;
+}
+
+.input-fields {
+  background: none;
+  border: none;
+  color: white;
+  width: 70%;
+}
+
+.textarea-field {
+  background: none;
+  border: none;
+  color: white;
+}
+
+.border {
+  border: 1px solid;
+}
